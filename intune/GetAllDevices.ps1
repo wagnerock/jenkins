@@ -121,11 +121,11 @@ try {
 #region Authentication
 
 # Getting the authorization token
-$global:authToken = Get-AuthToken -ClientID $ClientID -ClientSecret $ClientSecret -TenantId $TenantId
+#$global:authToken = Get-AuthToken -ClientID $ClientID -ClientSecret $ClientSecret -TenantId $TenantId
 #endregion
 
 ####################################################
-
+<#
 $ManagedDevices = Get-ManagedDevices
 
 if($ManagedDevices){
@@ -161,3 +161,8 @@ Write-Host "No Managed Devices found..." -ForegroundColor Red
 Write-Host
 
 }
+#>
+
+get-process | Export-Csv -Path ./Devices.csv -NoTypeInformation
+
+Write-Host "this is some output"
