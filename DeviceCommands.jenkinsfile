@@ -4,7 +4,7 @@ node {
 
       stage("SCM") {
         scmVars = checkout scm
-        checkout([$class: 'GitSCM', branches: [[name: scmVars.GIT_BRANCH]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'JENKINS_BITBUCKET_SSL', url: 'ssh://git@tools.adidas-group.com:7999/mdm/newworldofscripts.git']]])
+        checkout([$class: 'GitSCM', branches: [[name: scmVars.GIT_BRANCH]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[ url: 'https://github.com/wagnerock/jenkins.git']]])
       }
       stage("Upload device commands") {
           withCredentials([
