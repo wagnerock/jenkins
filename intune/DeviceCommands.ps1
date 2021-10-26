@@ -155,7 +155,7 @@ Function Invoke-DeviceAction(){
     }
     
 ####################################################
-
+<#
 #region Authentication
 
 # Getting the authorization token
@@ -203,3 +203,5 @@ elseif ($DeviceID) { #Command for inividual device
         Invoke-DeviceAction -DeviceID $DeviceID -Command changeOwnership -NewOwnership $NewOwnership
     }
 }
+#>
+if($CSVFilePath){ Import-Csv $CSVFilePath | Write-Host}
