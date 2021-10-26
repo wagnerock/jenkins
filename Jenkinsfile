@@ -15,54 +15,13 @@ node {
           sh '''
               set +x
 
-              PWSH_OUTPUT = /usr/local/bin/pwsh $WORKSPACE/intune/GetAllDevices.ps1 -ClientID ${APP_ID} -ClientSecret ${SECRET} -TenantId ${TENANT_ID} 
+              /usr/local/bin/pwsh $WORKSPACE/intune/GetAllDevices.ps1 -ClientID ${APP_ID} -ClientSecret ${SECRET} -TenantId ${TENANT_ID}  > powershell.txt
               echo "$PWSH_OUTPUT"
           '''
-
+          PWSH_OUTPUT = readFile('powershell.txt').trim()
           }
       }
-      stage("Upload it to Intune") {
-          withCredentials([
-              string(credentialsId: 'ADIDAS_ARTIFACTORY_DEPLOYER', variable: 'PW1'),
-              string(credentialsId: 'INTUNE_APP_RELEASE_TENANT_ID_PROD_TENANT', variable: 'TENANT_ID'),
-              string(credentialsId: 'INTUNE_APP_RELEASE_CLIENT_ID_PROD_TENANT', variable: 'APP_ID'),
-              string(credentialsId: 'INTUNE_APP_RELEASE_CLIENT_SECRET_PROD_TENANT', variable: 'SECRET'),
-          ]) {
-              APP_NAME = readFile('app_name.txt').trim()
-              echo "The APP_NAME is $APP_NAME"
-              APP_BUNDLE_ID = readFile('app_bundle_id.txt').trim()
-              echo "The APP_BUNDLE_ID is $APP_BUNDLE_ID"
-              BUNDLE_VERSION = readFile('bundle_version.txt').trim()
-              echo "The BUNDLE_VERSION is $BUNDLE_VERSION"
-              APP_VERSION = readFile('app_version.txt').trim()
-              echo "The APP_VERSION is $APP_VERSION"
-              APP_NAME = readFile('app_name.txt').trim()
-              echo "The APP_NAME is $APP_NAME"
-              search_result_output = readFile('search_result_output.txt').trim()
-              echo "The search_result_output is $search_result_output"
-              search_result_id = readFile('search_result_id.txt').trim()
-              echo "The search_result_id is $search_result_id"
-              EXISTINGID = readFile('search_result_id.txt').trim()
-              echo "The EXISTINGID is $EXISTINGID"
-              sh '''
-                  set +x
-                  # ARTIFACT_URI=$(<artifact_uri.txt)
-                  APP_NAME=$(<app_name.txt)
-                  APP_BUNDLE_ID=$(<app_bundle_id.txt)
-                  #curl -s -u${PW1} ${ARTIFACT_URI} -O
-                  FILE_TO_UPLOAD=$(ls *.ipa)
-                  APP_VERSION=$(<app_version.txt)
-                  BUNDLE_VERSION=$(<bundle_version.txt)
-                  MINIMUM_IOS_VERSION=$(<minimum_ios_version.txt)
-                  EXPIRATION_DATE=$(unzip -p $FILE_TO_UPLOAD \\*/embedded.mobileprovision | grep -a -A 2 ExpirationDate | grep date | sed -e 's/^.*<date>\\(.*\\)<\\/date>/\\1/')
-                  echo "EXPIRATION_DATE is $EXPIRATION_DATE"
-                  DEVICE_FAMILY=$(/Users/Shared/Jenkins/Home/scripts/newworldofscripts/upload/device_family_checker ${FILE_TO_UPLOAD})
-                  EXISTINGID=$(<search_result_id.txt)
-                  /usr/local/bin/pwsh $WORKSPACE/upload/deploy.ps1 -ClientID ${APP_ID} -ClientSecret ${SECRET} -TenantId ${TENANT_ID} -FileName $FILE_TO_UPLOAD -DisplayName "$APP_NAME" -Publisher Adidas -Description Adidas -BundleId "$APP_BUNDLE_ID" -IdentityVersion "$APP_VERSION" -VersionNumber "$BUNDLE_VERSION" -ExpirationDateTime "$EXPIRATION_DATE" -ExistingId "$EXISTINGID"
-                  rm $FILE_TO_UPLOAD
-              '''
-          }
-      }
+      
 
 
     deleteDir()
