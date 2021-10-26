@@ -21,7 +21,7 @@ node {
           PWSH_OUTPUT = readFile('powershell.txt').trim()
           echo "Powershell output is $PWSH_OUTPUT"
           }
-          archiveArtifacts ./Devices.csv
+          archiveArtifacts "$WORKSPACE/Devices.csv"
       }
       
 
